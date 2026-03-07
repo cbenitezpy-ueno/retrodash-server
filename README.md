@@ -17,21 +17,7 @@ Go-based MJPEG streaming server using ChromeDP for headless browser automation. 
 
 ### Using Docker (recommended)
 
-```bash
-docker run --rm \
-  --shm-size=256m \
-  -p 8080:8080 \
-  -e DASHBOARD_URL=http://host.docker.internal:3000/d/my-dashboard \
-  ghcr.io/cbenitezpy-ueno/retrodash-server:latest
-```
-
-### Using Docker Compose
-
-```bash
-cp .env.example .env
-# Edit .env with your dashboard URL
-docker compose up
-```
+See the [Docker](#docker) section for `docker run`, Docker Compose, and architecture details.
 
 ### From Source
 
@@ -48,6 +34,69 @@ make build
 # Run server
 DASHBOARD_URL=http://localhost:3000/d/my-dashboard ./bridge
 ```
+
+## Docker
+
+### Supported Architectures
+
+| Device | Architecture | Supported |
+|--------|-------------|-----------|
+| PC Intel/AMD | linux/amd64 | Yes |
+| Mac Intel | linux/amd64 | Yes (Docker Desktop) |
+| Mac Apple Silicon (M1-M4) | linux/arm64 | Yes (Docker Desktop) |
+| Raspberry Pi 3/4/5 | linux/arm64 | Yes |
+
+Docker automatically pulls the correct image for your architecture.
+
+### Pull
+
+```bash
+docker pull ghcr.io/cbenitezpy-ueno/retrodash-server:latest
+```
+
+### Run
+
+```bash
+docker run --rm \
+  --shm-size=256m \
+  -p 8080:8080 \
+  -e DASHBOARD_URL=http://host.docker.internal:3000/d/my-dashboard \
+  ghcr.io/cbenitezpy-ueno/retrodash-server:latest
+```
+
+### Docker Compose
+
+```yaml
+services:
+  bridge:
+    image: ghcr.io/cbenitezpy-ueno/retrodash-server:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - DASHBOARD_URL=http://grafana:3000/d/my-dashboard
+      - FPS=15
+    shm_size: '256mb'
+    restart: unless-stopped
+```
+
+### Available Tags
+
+| Tag | Description |
+|-----|-------------|
+| `latest` | Latest build from `main` branch |
+| `1.0.0` | Specific version |
+| `1.0` | Latest patch of minor version |
+| `1` | Latest minor of major version |
+| `abc1234` | Specific commit SHA |
+
+### Making the Package Public (first time)
+
+After the first successful publish, the package defaults to private. To make it public:
+
+1. Go to https://github.com/cbenitezpy-ueno/retrodash-server/pkgs/container/retrodash-server
+2. Click **Package settings**
+3. Under **Danger Zone**, click **Change visibility**
+4. Select **Public** and confirm
 
 ## Configuration
 
@@ -191,21 +240,6 @@ go test -v ./internal/browser/...
 2. Use low quality stream for bandwidth savings
 3. Smaller viewport (1280x720) reduces memory
 4. Docker with 256MB shm_size is recommended
-
-### Docker Compose example
-
-```yaml
-services:
-  bridge:
-    image: ghcr.io/cbenitezpy-ueno/retrodash-server:latest
-    ports:
-      - "8080:8080"
-    environment:
-      - DASHBOARD_URL=http://grafana:3000/d/my-dashboard
-      - FPS=15
-    shm_size: '256mb'
-    restart: unless-stopped
-```
 
 ## Contributing
 
