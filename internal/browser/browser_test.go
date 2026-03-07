@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"os/exec"
 	"testing"
 	"time"
@@ -14,11 +15,13 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// isChromeAvailable checks if Chrome is installed on the system.
-// Tests that require a real Chrome browser should skip if this returns false.
+// isChromeAvailable checks if Chrome is installed and we're not in a CI
+// environment where headless Chrome is unreliable (no shm, sandbox issues).
 func isChromeAvailable() bool {
-	// Check common Chrome executable names
-	for _, name := range []string{"google-chrome", "chromium", "chromium-browser"} {
+	if os.Getenv("CI") == "true" {
+		return false
+	}
+	for _, name := range []string{"google-chrome", "google-chrome-stable", "chromium", "chromium-browser"} {
 		if _, err := exec.LookPath(name); err == nil {
 			return true
 		}
