@@ -17,21 +17,7 @@ Go-based MJPEG streaming server using ChromeDP for headless browser automation. 
 
 ### Using Docker (recommended)
 
-```bash
-docker run --rm \
-  --shm-size=256m \
-  -p 8080:8080 \
-  -e DASHBOARD_URL=http://host.docker.internal:3000/d/my-dashboard \
-  ghcr.io/cbenitezpy-ueno/retrodash-server:latest
-```
-
-### Using Docker Compose
-
-```bash
-cp .env.example .env
-# Edit .env with your dashboard URL
-docker compose up
-```
+See the [Docker](#docker) section for `docker run`, Docker Compose, and architecture details.
 
 ### From Source
 
@@ -254,21 +240,6 @@ go test -v ./internal/browser/...
 2. Use low quality stream for bandwidth savings
 3. Smaller viewport (1280x720) reduces memory
 4. Docker with 256MB shm_size is recommended
-
-### Docker Compose example
-
-```yaml
-services:
-  bridge:
-    image: ghcr.io/cbenitezpy-ueno/retrodash-server:latest
-    ports:
-      - "8080:8080"
-    environment:
-      - DASHBOARD_URL=http://grafana:3000/d/my-dashboard
-      - FPS=15
-    shm_size: '256mb'
-    restart: unless-stopped
-```
 
 ## Contributing
 
