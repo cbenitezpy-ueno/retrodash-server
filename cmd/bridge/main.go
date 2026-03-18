@@ -10,6 +10,7 @@ import (
 	"github.com/cbenitezpy-ueno/retrodash-server/internal/api"
 	"github.com/cbenitezpy-ueno/retrodash-server/internal/config"
 	"github.com/cbenitezpy-ueno/retrodash-server/internal/health"
+	"github.com/cbenitezpy-ueno/retrodash-server/internal/logging"
 	"github.com/cbenitezpy-ueno/retrodash-server/internal/origins"
 	"github.com/cbenitezpy-ueno/retrodash-server/internal/stream"
 	"github.com/cbenitezpy-ueno/retrodash-server/internal/switching"
@@ -17,7 +18,8 @@ import (
 )
 
 func main() {
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	// Initialize structured JSON logging
+	logging.Setup(nil, "bridge")
 	log.Println("Starting RetroDash Bridge Server...")
 
 	// Load configuration
@@ -84,8 +86,29 @@ func main() {
 	// Create health checker with source switcher (implements StatusProvider and ModeProvider)
 	healthChecker := health.NewChecker(sourceSwitcher, broadcaster, sourceSwitcher)
 
+	// Create Prometheus metrics and start background updater
+	metrics := health.NewMetrics()
+	metrics.SetBrowserReady(sourceSwitcher.IsReady())
+	metrics.SetActiveStreams(broadcaster.ActiveClients())
+	go func() {
+		ticker := time.NewTicker(15 * time.Second)
+		defer ticker.Stop()
+		for {
+			select {
+			case <-captureCtx.Done():
+				return
+			case <-ticker.C:
+				metrics.UpdateMemory()
+				metrics.SetBrowserReady(sourceSwitcher.IsReady())
+				metrics.SetActiveStreams(broadcaster.ActiveClients())
+			}
+		}
+	}()
+
 	// Create HTTP server
 	srv := api.NewServer(cfg)
+	srv.SetMetrics(metrics)
+	srv.RegisterHealthRoutes(sourceSwitcher)
 
 	// Create handlers
 	handlers := api.NewHandlers(healthChecker)
@@ -103,7 +126,7 @@ func main() {
 	srv.RegisterHandler("/api/origins", handlers.OriginsHandler)
 	srv.RegisterHandler("/api/origins/", handlers.OriginItemHandler)
 
-	log.Printf("Routes registered: /health, /stream, /touch, /api/origins, /api/origins/{id} (mode: %s)", mode)
+	log.Printf("Routes registered: /health, /healthz, /readyz, /metrics, /stream, /touch, /api/origins, /api/origins/{id} (mode: %s)", mode)
 	log.Printf("Origin manager initialized with %d origins", originManager.Count())
 
 	// Start server with graceful shutdown
