@@ -50,14 +50,14 @@ deps:
 
 # Docker build for local architecture
 docker-build:
-	docker build -t ghcr.io/cbenitezpy-ueno/retrodash-server:latest .
+	docker build -t retrodash/bridge-server:latest .
 
 # Docker multi-arch build (AMD64 + ARM64)
 docker-build-multiarch:
 	docker buildx create --name multiarch --driver docker-container --use 2>/dev/null || true
 	docker buildx build \
 		--platform linux/amd64,linux/arm64 \
-		-t ghcr.io/cbenitezpy-ueno/retrodash-server:latest \
+		-t retrodash/bridge-server:latest \
 		--push .
 
 # Docker run locally
@@ -66,7 +66,7 @@ docker-run:
 		--shm-size=256m \
 		-p 8080:8080 \
 		-e DASHBOARD_URL=$(DASHBOARD_URL) \
-		ghcr.io/cbenitezpy-ueno/retrodash-server:latest
+		retrodash/bridge-server:latest
 
 # Help
 help:

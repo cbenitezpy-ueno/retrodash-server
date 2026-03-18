@@ -171,7 +171,7 @@ func TestManager_UpdateDuplicateName(t *testing.T) {
 	}
 
 	// Create two origins
-	manager.Create("Origin 1", OriginTypeCommand, config)
+	_, _ = manager.Create("Origin 1", OriginTypeCommand, config)
 	origin2, _ := manager.Create("Origin 2", OriginTypeCommand, config)
 
 	// Try to update origin2 with origin1's name
@@ -238,7 +238,7 @@ func TestManager_DeleteActiveOrigin(t *testing.T) {
 	}
 
 	created, _ := manager.Create("Test Origin", OriginTypeCommand, config)
-	manager.SetActiveOriginID(created.ID)
+	_ = manager.SetActiveOriginID(created.ID)
 
 	// Verify it's active
 	if manager.GetActiveOriginID() != created.ID {
@@ -314,7 +314,7 @@ func TestManager_GetOriginList(t *testing.T) {
 		},
 	}
 	created, _ := manager.Create("Grafana", OriginTypeGrafana, config1)
-	manager.SetActiveOriginID(created.ID)
+	_ = manager.SetActiveOriginID(created.ID)
 
 	list = manager.GetOriginList()
 	if len(list.Origins) != 1 {
@@ -346,7 +346,7 @@ func TestManager_ErrorIsolation(t *testing.T) {
 	origin2, _ := manager.Create("Origin 2", OriginTypeCommand, config)
 
 	// Set origin1 to error state
-	manager.SetOriginStatus(origin1.ID, StatusError, "Connection failed")
+	_ = manager.SetOriginStatus(origin1.ID, StatusError, "Connection failed")
 
 	// Origin2 should still be configurable and accessible
 	o2, err := manager.GetByID(origin2.ID)
@@ -384,7 +384,7 @@ func TestManager_ConcurrentAccess(t *testing.T) {
 
 	// Create some initial origins
 	for i := 0; i < 10; i++ {
-		manager.Create("Origin "+string(rune('A'+i)), OriginTypeCommand, config)
+		_, _ = manager.Create("Origin "+string(rune('A'+i)), OriginTypeCommand, config)
 	}
 
 	// Run concurrent operations
@@ -404,7 +404,7 @@ func TestManager_ConcurrentAccess(t *testing.T) {
 		origins := manager.GetAll()
 		for i := 0; i < 100; i++ {
 			for _, o := range origins {
-				manager.SetOriginStatus(o.ID, StatusConnecting, "")
+				_ = manager.SetOriginStatus(o.ID, StatusConnecting, "")
 			}
 		}
 		done <- true

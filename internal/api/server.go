@@ -12,6 +12,8 @@ import (
 	"time"
 
 	"github.com/cbenitezpy-ueno/retrodash-server/internal/config"
+	"github.com/cbenitezpy-ueno/retrodash-server/internal/health"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 // Server represents the HTTP server.
@@ -20,6 +22,7 @@ type Server struct {
 	cfg        *config.Config
 	mux        *http.ServeMux
 	startTime  time.Time
+	metrics    *health.Metrics // nil if metrics not configured
 }
 
 // NewServer creates a new HTTP server.
@@ -41,6 +44,21 @@ func NewServer(cfg *config.Config) *Server {
 	}
 
 	return srv
+}
+
+// SetMetrics configures Prometheus metrics for the server.
+// When set, the /metrics endpoint is registered and the Prometheus middleware is enabled.
+func (s *Server) SetMetrics(m *health.Metrics) {
+	s.metrics = m
+}
+
+// RegisterHealthRoutes registers the Kubernetes health probe and Prometheus metrics endpoints.
+func (s *Server) RegisterHealthRoutes(provider health.StatusProvider) {
+	s.mux.HandleFunc("/healthz", health.LivenessHandler())
+	s.mux.HandleFunc("/readyz", health.ReadinessHandler(provider))
+	if s.metrics != nil {
+		s.mux.Handle("/metrics", promhttp.HandlerFor(s.metrics.Registry(), promhttp.HandlerOpts{}))
+	}
 }
 
 // RegisterHandler registers a handler for a pattern.
@@ -104,5 +122,8 @@ func (s *Server) applyMiddleware(handler http.Handler) http.Handler {
 	handler = CORSMiddleware(handler)
 	handler = RecoveryMiddleware(handler)
 	handler = LoggingMiddleware(handler)
+	if s.metrics != nil {
+		handler = PrometheusMiddleware(s.metrics)(handler)
+	}
 	return handler
 }

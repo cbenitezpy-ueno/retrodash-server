@@ -204,7 +204,7 @@ func TestListOriginsHandler_WithOrigins(t *testing.T) {
 	require.NoError(t, err)
 
 	// Set active origin
-	manager.SetActiveOriginID(origin1.ID)
+	require.NoError(t, manager.SetActiveOriginID(origin1.ID))
 
 	handlers := NewHandlers(nil)
 	handlers.SetOriginManager(manager)
@@ -811,7 +811,7 @@ func TestDeleteOriginHandler_ActiveOrigin(t *testing.T) {
 	}
 	origin, err := manager.Create("Active Origin", origins.OriginTypeCommand, config)
 	require.NoError(t, err)
-	manager.SetActiveOriginID(origin.ID)
+	require.NoError(t, manager.SetActiveOriginID(origin.ID))
 
 	handlers := NewHandlers(nil)
 	handlers.SetOriginManager(manager)

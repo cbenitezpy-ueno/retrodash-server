@@ -110,8 +110,8 @@ func TestTerminal_CaptureScreenshot(t *testing.T) {
 	_, err := term.CaptureScreenshot(ctx, 80)
 	assert.Error(t, err)
 
-	term.Start(ctx)
-	defer term.Stop()
+	_ = term.Start(ctx)
+	defer func() { _ = term.Stop() }()
 	time.Sleep(100 * time.Millisecond) // Give time for echo output
 
 	imgData, err := term.CaptureScreenshot(ctx, 80)

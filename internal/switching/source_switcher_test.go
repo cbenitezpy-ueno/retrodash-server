@@ -335,13 +335,13 @@ func TestNavigateBrowserLocked_NoBrowser(t *testing.T) {
 func TestNavigateBrowserLocked_NavigateSuccess(t *testing.T) {
 	ts1 := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
-		w.Write([]byte("<html><body><div id='root'>Page 1</div></body></html>"))
+		_, _ = w.Write([]byte("<html><body><div id='root'>Page 1</div></body></html>"))
 	}))
 	defer ts1.Close()
 
 	ts2 := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
-		w.Write([]byte("<html><body><div id='root'>Page 2</div></body></html>"))
+		_, _ = w.Write([]byte("<html><body><div id='root'>Page 2</div></body></html>"))
 	}))
 	defer ts2.Close()
 
@@ -436,7 +436,7 @@ func TestCreateTerminal_InvalidURL(t *testing.T) {
 func TestCreateBrowser(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
-		w.Write([]byte("<html><body>OK</body></html>"))
+		_, _ = w.Write([]byte("<html><body>OK</body></html>"))
 	}))
 	defer ts.Close()
 
@@ -449,7 +449,7 @@ func TestCreateBrowser(t *testing.T) {
 	b, err := sw.createBrowser(context.Background(), ts.URL)
 	if err == nil {
 		assert.NotNil(t, b)
-		b.Stop()
+		_ = b.Stop()
 	}
 }
 
@@ -469,7 +469,7 @@ func TestCreateBrowser_Unreachable(t *testing.T) {
 func TestSwitchToTerminal(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
-		w.Write([]byte("<html><body>OK</body></html>"))
+		_, _ = w.Write([]byte("<html><body>OK</body></html>"))
 	}))
 	defer ts.Close()
 
@@ -493,7 +493,7 @@ func TestSwitchToTerminal(t *testing.T) {
 		assert.NotNil(t, sw.terminal)
 		assert.Nil(t, sw.chromeBrowser)
 		assert.NotNil(t, sw.currentProvider)
-		sw.terminal.Stop()
+		_ = sw.terminal.Stop()
 	}
 }
 
@@ -508,14 +508,14 @@ func TestSwitchToTerminal_NoOldBrowser(t *testing.T) {
 	err := sw.switchToTerminal(context.Background(), "cmd://echo hello")
 	if err == nil {
 		assert.NotNil(t, sw.terminal)
-		sw.terminal.Stop()
+		_ = sw.terminal.Stop()
 	}
 }
 
 func TestSwitchToBrowser(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
-		w.Write([]byte("<html><body>OK</body></html>"))
+		_, _ = w.Write([]byte("<html><body>OK</body></html>"))
 	}))
 	defer ts.Close()
 
@@ -539,14 +539,14 @@ func TestSwitchToBrowser(t *testing.T) {
 		assert.Nil(t, sw.terminal)
 		assert.NotNil(t, sw.currentProvider)
 		assert.NotNil(t, sw.touchHandler)
-		sw.chromeBrowser.Stop()
+		_ = sw.chromeBrowser.Stop()
 	}
 }
 
 func TestSwitchToBrowser_NoOldTerminal(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
-		w.Write([]byte("<html><body>OK</body></html>"))
+		_, _ = w.Write([]byte("<html><body>OK</body></html>"))
 	}))
 	defer ts.Close()
 
@@ -560,7 +560,7 @@ func TestSwitchToBrowser_NoOldTerminal(t *testing.T) {
 	err := sw.switchToBrowser(context.Background(), ts.URL)
 	if err == nil {
 		assert.NotNil(t, sw.chromeBrowser)
-		sw.chromeBrowser.Stop()
+		_ = sw.chromeBrowser.Stop()
 	}
 }
 
@@ -591,7 +591,7 @@ func TestSwitchToBrowser_CreateFails(t *testing.T) {
 func TestSwitchToOrigin_TypeSwitch_TerminalToBrowser(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
-		w.Write([]byte("<html><body>OK</body></html>"))
+		_, _ = w.Write([]byte("<html><body>OK</body></html>"))
 	}))
 	defer ts.Close()
 
@@ -631,7 +631,7 @@ func TestSwitchToOrigin_TypeSwitch_TerminalToBrowser(t *testing.T) {
 func TestSwitchToOrigin_TypeSwitch_BrowserToTerminal(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
-		w.Write([]byte("<html><body>OK</body></html>"))
+		_, _ = w.Write([]byte("<html><body>OK</body></html>"))
 	}))
 	defer ts.Close()
 

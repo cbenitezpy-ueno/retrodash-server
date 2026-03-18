@@ -17,6 +17,13 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o bridge ./cmd/bridge
 # Stage 2: Runtime with Chromium
 FROM debian:bookworm-slim
 
+# OCI image metadata
+LABEL org.opencontainers.image.title="RetroDash Bridge" \
+      org.opencontainers.image.description="Stream dashboards as MJPEG to retro devices" \
+      org.opencontainers.image.source="https://github.com/cbenitezpy-ueno/retrodash" \
+      org.opencontainers.image.vendor="cbenitez" \
+      org.opencontainers.image.licenses="MIT"
+
 # Install Chromium and dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     chromium \
@@ -31,7 +38,7 @@ RUN groupadd -r bridge && useradd -r -g bridge -G audio,video bridge
 
 # Set up directories
 WORKDIR /app
-RUN mkdir -p /tmp/chrome-data && chown -R bridge:bridge /tmp/chrome-data
+RUN mkdir -p /tmp/chrome-data /app/data && chown -R bridge:bridge /tmp/chrome-data /app/data
 
 # Copy binary from builder
 COPY --from=builder /app/bridge /app/bridge
@@ -47,7 +54,7 @@ EXPOSE 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/healthz || exit 1
 
 # Run the server
 ENTRYPOINT ["/app/bridge"]

@@ -13,7 +13,7 @@ func TestJSONStore_LoadEmpty(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tempDir)
+	defer func() { _ = os.RemoveAll(tempDir) }()
 
 	store := NewJSONStore(filepath.Join(tempDir, "origins.json"))
 
@@ -33,7 +33,7 @@ func TestJSONStore_SaveAndLoad(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tempDir)
+	defer func() { _ = os.RemoveAll(tempDir) }()
 
 	store := NewJSONStore(filepath.Join(tempDir, "origins.json"))
 
@@ -137,7 +137,7 @@ func TestJSONStore_CorruptedFile(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tempDir)
+	defer func() { _ = os.RemoveAll(tempDir) }()
 
 	filePath := filepath.Join(tempDir, "origins.json")
 	store := NewJSONStore(filePath)
@@ -163,7 +163,7 @@ func TestJSONStore_EmptyFile(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tempDir)
+	defer func() { _ = os.RemoveAll(tempDir) }()
 
 	filePath := filepath.Join(tempDir, "origins.json")
 	store := NewJSONStore(filePath)
@@ -189,7 +189,7 @@ func TestJSONStore_CreateDirectoryIfNotExists(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tempDir)
+	defer func() { _ = os.RemoveAll(tempDir) }()
 
 	// Use a nested path that doesn't exist
 	store := NewJSONStore(filepath.Join(tempDir, "nested", "dir", "origins.json"))
@@ -226,7 +226,7 @@ func TestJSONStore_AtomicWrite(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tempDir)
+	defer func() { _ = os.RemoveAll(tempDir) }()
 
 	filePath := filepath.Join(tempDir, "origins.json")
 	store := NewJSONStore(filePath)
@@ -259,7 +259,7 @@ func TestJSONStore_InvalidOriginSkipped(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tempDir)
+	defer func() { _ = os.RemoveAll(tempDir) }()
 
 	filePath := filepath.Join(tempDir, "origins.json")
 	store := NewJSONStore(filePath)

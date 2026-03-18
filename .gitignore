@@ -22,9 +22,6 @@ Thumbs.db
 .env
 .env.local
 
-# Data (may contain sensitive config)
-data/origins.json
-
 # Logs
 *.log
 

@@ -143,7 +143,7 @@ func TestTouchHandler_InvalidJSON(t *testing.T) {
 	assert.Equal(t, http.StatusBadRequest, rec.Code)
 
 	var resp types.ErrorResponse
-	json.NewDecoder(rec.Body).Decode(&resp)
+	require.NoError(t, json.NewDecoder(rec.Body).Decode(&resp))
 	assert.Equal(t, "INVALID_REQUEST", resp.Code)
 }
 
@@ -175,7 +175,7 @@ func TestTouchHandler_InvalidCoordinates(t *testing.T) {
 			assert.Equal(t, http.StatusBadRequest, rec.Code)
 
 			var resp types.ErrorResponse
-			json.NewDecoder(rec.Body).Decode(&resp)
+			require.NoError(t, json.NewDecoder(rec.Body).Decode(&resp))
 			assert.Equal(t, "INVALID_TOUCH", resp.Code)
 		})
 	}

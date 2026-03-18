@@ -4,7 +4,11 @@ import (
 	"log"
 	"net/http"
 	"runtime/debug"
+	"strconv"
+	"strings"
 	"time"
+
+	"github.com/cbenitezpy-ueno/retrodash-server/internal/health"
 )
 
 // responseWriter wraps http.ResponseWriter to capture status code.
@@ -75,6 +79,38 @@ func RecoveryMiddleware(next http.Handler) http.Handler {
 
 		next.ServeHTTP(w, r)
 	})
+}
+
+// PrometheusMiddleware counts HTTP requests using the provided Metrics.
+// It records the method, path, and response status for each request.
+func PrometheusMiddleware(metrics *health.Metrics) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			rw := newResponseWriter(w)
+			next.ServeHTTP(rw, r)
+			// Skip counting streaming endpoints to avoid noise
+			if r.URL.Path == "/stream" {
+				return
+			}
+			metrics.IncHTTPRequests(r.Method, normalizePath(r.URL.Path), strconv.Itoa(rw.status))
+		})
+	}
+}
+
+// normalizePath collapses dynamic path segments to prevent unbounded Prometheus
+// label cardinality. For example, /api/origins/abc-123 becomes /api/origins/{id}.
+func normalizePath(path string) string {
+	if strings.HasPrefix(path, "/api/origins/") {
+		rest := strings.TrimPrefix(path, "/api/origins/")
+		if rest == "" || rest == "allowed-commands" {
+			return path
+		}
+		if strings.HasSuffix(rest, "/connect") {
+			return "/api/origins/{id}/connect"
+		}
+		return "/api/origins/{id}"
+	}
+	return path
 }
 
 // CORSMiddleware adds CORS headers for local network access.

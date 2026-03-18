@@ -4,7 +4,6 @@ import (
 	"context"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"os/exec"
 	"testing"
 	"time"
@@ -15,13 +14,11 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// isChromeAvailable checks if Chrome is installed and we're not in a CI
-// environment where headless Chrome is unreliable (no shm, sandbox issues).
+// isChromeAvailable checks if Chrome is installed on the system.
+// Tests that require a real Chrome browser should skip if this returns false.
 func isChromeAvailable() bool {
-	if os.Getenv("CI") == "true" {
-		return false
-	}
-	for _, name := range []string{"google-chrome", "google-chrome-stable", "chromium", "chromium-browser"} {
+	// Check common Chrome executable names
+	for _, name := range []string{"google-chrome", "chromium", "chromium-browser"} {
 		if _, err := exec.LookPath(name); err == nil {
 			return true
 		}
@@ -446,13 +443,13 @@ func TestChromeBrowser_Navigate_Success(t *testing.T) {
 	// Create two test servers to navigate between
 	ts1 := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
-		w.Write([]byte("<html><body><div id='root'>Page 1</div></body></html>"))
+		_, _ = w.Write([]byte("<html><body><div id='root'>Page 1</div></body></html>"))
 	}))
 	defer ts1.Close()
 
 	ts2 := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
-		w.Write([]byte("<html><body><div id='root'>Page 2</div></body></html>"))
+		_, _ = w.Write([]byte("<html><body><div id='root'>Page 2</div></body></html>"))
 	}))
 	defer ts2.Close()
 
@@ -470,7 +467,7 @@ func TestChromeBrowser_Navigate_Success(t *testing.T) {
 	// Start the browser
 	err := b.Start(ctx)
 	require.NoError(t, err)
-	defer b.Stop()
+	defer func() { _ = b.Stop() }()
 
 	assert.Equal(t, types.BrowserReady, b.Status())
 
@@ -486,7 +483,7 @@ func TestChromeBrowser_Navigate_NavigationFailed(t *testing.T) {
 	}
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
-		w.Write([]byte("<html><body>OK</body></html>"))
+		_, _ = w.Write([]byte("<html><body>OK</body></html>"))
 	}))
 	defer ts.Close()
 

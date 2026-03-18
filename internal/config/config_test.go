@@ -1,7 +1,6 @@
 package config
 
 import (
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -24,24 +23,14 @@ func TestDefaultConfig(t *testing.T) {
 
 func TestLoad_ValidConfig(t *testing.T) {
 	// Set environment variables
-	os.Setenv("DASHBOARD_URL", "http://grafana:3000/dashboard")
-	os.Setenv("PORT", "9090")
-	os.Setenv("FPS", "20")
-	os.Setenv("JPEG_QUALITY_HIGH", "90")
-	os.Setenv("JPEG_QUALITY_LOW", "40")
-	os.Setenv("VIEWPORT_WIDTH", "1280")
-	os.Setenv("VIEWPORT_HEIGHT", "720")
-	os.Setenv("CHROME_PATH", "/usr/bin/chromium")
-	defer func() {
-		os.Unsetenv("DASHBOARD_URL")
-		os.Unsetenv("PORT")
-		os.Unsetenv("FPS")
-		os.Unsetenv("JPEG_QUALITY_HIGH")
-		os.Unsetenv("JPEG_QUALITY_LOW")
-		os.Unsetenv("VIEWPORT_WIDTH")
-		os.Unsetenv("VIEWPORT_HEIGHT")
-		os.Unsetenv("CHROME_PATH")
-	}()
+	t.Setenv("DASHBOARD_URL", "http://grafana:3000/dashboard")
+	t.Setenv("PORT", "9090")
+	t.Setenv("FPS", "20")
+	t.Setenv("JPEG_QUALITY_HIGH", "90")
+	t.Setenv("JPEG_QUALITY_LOW", "40")
+	t.Setenv("VIEWPORT_WIDTH", "1280")
+	t.Setenv("VIEWPORT_HEIGHT", "720")
+	t.Setenv("CHROME_PATH", "/usr/bin/chromium")
 
 	cfg, err := Load()
 	require.NoError(t, err)
@@ -57,7 +46,7 @@ func TestLoad_ValidConfig(t *testing.T) {
 }
 
 func TestLoad_MissingDashboardURL(t *testing.T) {
-	os.Unsetenv("DASHBOARD_URL")
+	t.Setenv("DASHBOARD_URL", "")
 
 	_, err := Load()
 	assert.ErrorIs(t, err, ErrMissingDashboardURL)
@@ -76,8 +65,7 @@ func TestLoad_InvalidDashboardURL(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			os.Setenv("DASHBOARD_URL", tt.url)
-			defer os.Unsetenv("DASHBOARD_URL")
+			t.Setenv("DASHBOARD_URL", tt.url)
 
 			_, err := Load()
 			assert.ErrorIs(t, err, ErrInvalidDashboardURL)
@@ -86,17 +74,16 @@ func TestLoad_InvalidDashboardURL(t *testing.T) {
 }
 
 func TestLoad_DefaultsWhenEnvMissing(t *testing.T) {
-	os.Setenv("DASHBOARD_URL", "http://localhost:3000")
-	defer os.Unsetenv("DASHBOARD_URL")
+	t.Setenv("DASHBOARD_URL", "http://localhost:3000")
 
 	// Clear all optional env vars
-	os.Unsetenv("PORT")
-	os.Unsetenv("FPS")
-	os.Unsetenv("JPEG_QUALITY_HIGH")
-	os.Unsetenv("JPEG_QUALITY_LOW")
-	os.Unsetenv("VIEWPORT_WIDTH")
-	os.Unsetenv("VIEWPORT_HEIGHT")
-	os.Unsetenv("CHROME_PATH")
+	t.Setenv("PORT", "")
+	t.Setenv("FPS", "")
+	t.Setenv("JPEG_QUALITY_HIGH", "")
+	t.Setenv("JPEG_QUALITY_LOW", "")
+	t.Setenv("VIEWPORT_WIDTH", "")
+	t.Setenv("VIEWPORT_HEIGHT", "")
+	t.Setenv("CHROME_PATH", "")
 
 	cfg, err := Load()
 	require.NoError(t, err)
@@ -203,11 +190,10 @@ func TestValidate_HTTPSSupported(t *testing.T) {
 }
 
 func TestLoad_OriginsFile(t *testing.T) {
-	os.Setenv("DASHBOARD_URL", "http://localhost:3000")
-	defer os.Unsetenv("DASHBOARD_URL")
+	t.Setenv("DASHBOARD_URL", "http://localhost:3000")
 
 	t.Run("default value when ORIGINS_FILE not set", func(t *testing.T) {
-		os.Unsetenv("ORIGINS_FILE")
+		t.Setenv("ORIGINS_FILE", "")
 
 		cfg, err := Load()
 		require.NoError(t, err)
@@ -215,8 +201,7 @@ func TestLoad_OriginsFile(t *testing.T) {
 	})
 
 	t.Run("custom value when ORIGINS_FILE set", func(t *testing.T) {
-		os.Setenv("ORIGINS_FILE", "/custom/path/origins.json")
-		defer os.Unsetenv("ORIGINS_FILE")
+		t.Setenv("ORIGINS_FILE", "/custom/path/origins.json")
 
 		cfg, err := Load()
 		require.NoError(t, err)
