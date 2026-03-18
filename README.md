@@ -140,8 +140,23 @@ helm install retrodash-bridge \
 git clone https://github.com/cbenitezpy-ueno/retrodash-server.git
 cd retrodash-server
 
-# Edit deploy/k8s/deployment.yaml and set DASHBOARD_URL
-kubectl apply -k deploy/k8s/
+# Create an overlay with your configuration
+mkdir -p deploy/k8s/overlays/my-env
+cat > deploy/k8s/overlays/my-env/kustomization.yaml <<EOF
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../
+patches:
+  - target:
+      kind: Deployment
+      name: retrodash-bridge
+    patch: |
+      - op: replace
+        path: /spec/template/spec/containers/0/env/0/value
+        value: "https://grafana.example.com/d/your-dashboard"
+EOF
+kubectl apply -k deploy/k8s/overlays/my-env/
 ```
 
 ### Uninstall

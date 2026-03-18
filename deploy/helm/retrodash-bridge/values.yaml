@@ -30,7 +30,7 @@ env:
 resources:
   requests:
     cpu: 500m
-    memory: 256Mi
+    memory: 512Mi
   limits:
     cpu: "1"
     memory: 1Gi
@@ -58,7 +58,9 @@ service:
 ingress:
   enabled: false
   className: ""
-  annotations: {}
+  annotations:
+    {}
+    # To enable proxy timeouts, replace {} above with:
     # nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     # nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
   hosts:
