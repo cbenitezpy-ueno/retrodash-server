@@ -1,5 +1,27 @@
 RetroDash Bridge has been deployed!
 
+{{- if not .Values.env.DASHBOARD_URL }}
+
+The server is running in STANDBY MODE — no dashboard configured.
+Configure origins from the RetroDash mobile app or via the API:
+
+  # Port-forward to the service
+  kubectl port-forward svc/{{ include "retrodash-bridge.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }} -n {{ .Release.Namespace }}
+
+  # Create an origin
+  curl -X POST http://localhost:{{ .Values.service.port }}/api/origins \
+    -H "Content-Type: application/json" \
+    -d '{"name":"My Dashboard","type":"grafana","config":{"url":"http://grafana:3000/d/my-dashboard"}}'
+
+  # Connect to it
+  curl -X POST http://localhost:{{ .Values.service.port }}/api/origins/<id>/connect
+
+{{- else }}
+
+Streaming dashboard: {{ .Values.env.DASHBOARD_URL }}
+
+{{- end }}
+
 {{- if .Values.ingress.enabled }}
 Access the stream at:
 {{- range .Values.ingress.hosts }}
@@ -8,7 +30,7 @@ Access the stream at:
 {{- else }}
 To access the MJPEG stream, run:
 
-  kubectl port-forward svc/{{ include "retrodash-bridge.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+  kubectl port-forward svc/{{ include "retrodash-bridge.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }} -n {{ .Release.Namespace }}
 
 Then open in your browser:
 
@@ -23,6 +45,6 @@ Health endpoints:
   /metrics  - Prometheus metrics
 
 API endpoints:
-  /api/origins          - List/create origins
-  /api/origins/{id}     - Get/update/delete origin
+  /api/origins              - List/create origins
+  /api/origins/{id}         - Get/update/delete origin
   /api/origins/{id}/connect - Switch to origin

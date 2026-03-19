@@ -34,10 +34,8 @@ spec:
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           env:
-            - name: DASHBOARD_URL
-              value: {{ required "env.DASHBOARD_URL is required. Set it with --set env.DASHBOARD_URL=https://your-grafana/d/dashboard" .Values.env.DASHBOARD_URL | quote }}
             {{- range $key, $value := .Values.env }}
-            {{- if ne $key "DASHBOARD_URL" }}
+            {{- if $value }}
             - name: {{ $key }}
               value: {{ $value | quote }}
             {{- end }}

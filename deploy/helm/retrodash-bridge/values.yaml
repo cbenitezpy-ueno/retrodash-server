@@ -2,14 +2,16 @@
 # Full documentation: https://github.com/cbenitezpy-ueno/retrodash
 
 image:
-  repository: ghcr.io/cbenitezpy-ueno/retrodash-bridge
+  repository: ghcr.io/cbenitezpy-ueno/retrodash-server
   tag: ""  # Defaults to Chart appVersion
   pullPolicy: IfNotPresent
 
 # Environment variables for the Bridge server
 env:
-  # REQUIRED: URL of the dashboard to stream
-  DASHBOARD_URL: "https://grafana.example.com/d/your-dashboard"
+  # Optional: URL of the dashboard to stream.
+  # If empty, the server starts in standby mode and waits for
+  # origin configuration via the REST API or mobile app.
+  DASHBOARD_URL: ""
   # Server port (must match service.port)
   PORT: "8080"
   # Frames per second for MJPEG stream

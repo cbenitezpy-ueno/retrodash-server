@@ -26,14 +26,16 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: bridge
-          image: ghcr.io/cbenitezpy-ueno/retrodash-bridge:1.0.0
+          image: ghcr.io/cbenitezpy-ueno/retrodash-server:latest
           ports:
             - name: http
               containerPort: 8080
               protocol: TCP
           env:
-            - name: DASHBOARD_URL
-              value: "https://grafana.example.com/d/your-dashboard"
+            # DASHBOARD_URL is optional. If omitted, starts in standby mode.
+            # Uncomment and set to stream a dashboard immediately:
+            # - name: DASHBOARD_URL
+            #   value: "https://grafana.example.com/d/your-dashboard"
             - name: PORT
               value: "8080"
             - name: FPS
