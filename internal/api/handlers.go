@@ -14,9 +14,16 @@ import (
 	"github.com/cbenitezpy-ueno/retrodash-server/internal/health"
 	"github.com/cbenitezpy-ueno/retrodash-server/internal/origins"
 	"github.com/cbenitezpy-ueno/retrodash-server/internal/stream"
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/switching"
 	"github.com/cbenitezpy-ueno/retrodash-server/pkg/types"
 )
+
+// SourceProvider is the interface used by handlers to interact with the active
+// streaming source. *switching.SourceSwitcher satisfies this interface.
+type SourceProvider interface {
+	GetProvider() stream.FrameProvider
+	GetTouchHandler() *browser.TouchHandler
+	SwitchToOrigin(ctx context.Context, origin *origins.Origin) error
+}
 
 // Handlers holds dependencies for HTTP handlers.
 type Handlers struct {
@@ -24,7 +31,7 @@ type Handlers struct {
 	broadcaster    *stream.Broadcaster
 	touchHandler   *browser.TouchHandler
 	originManager  *origins.Manager
-	sourceSwitcher *switching.SourceSwitcher
+	sourceSwitcher SourceProvider
 	clientIDGen    func() string
 }
 
@@ -52,7 +59,7 @@ func (h *Handlers) SetOriginManager(m *origins.Manager) {
 }
 
 // SetSourceSwitcher sets the source switcher for dynamic origin switching.
-func (h *Handlers) SetSourceSwitcher(s *switching.SourceSwitcher) {
+func (h *Handlers) SetSourceSwitcher(s SourceProvider) {
 	h.sourceSwitcher = s
 }
 
@@ -500,6 +507,42 @@ func (h *Handlers) HealthHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	writeJSON(w, resp)
+}
+
+// SnapshotHandler handles GET /snapshot requests returning a single JPEG frame.
+// Used by iOS clients where WKWebView MJPEG streaming is unavailable.
+func (h *Handlers) SnapshotHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	if h.sourceSwitcher == nil {
+		http.Error(w, "Snapshot not available", http.StatusServiceUnavailable)
+		return
+	}
+
+	provider := h.sourceSwitcher.GetProvider()
+	if provider == nil || !provider.IsReady() {
+		http.Error(w, "Source not ready", http.StatusServiceUnavailable)
+		return
+	}
+
+	quality := 85
+	if q := r.URL.Query().Get("quality"); q == "low" {
+		quality = 50
+	}
+
+	data, err := provider.CaptureScreenshot(r.Context(), quality)
+	if err != nil {
+		http.Error(w, "Capture failed", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "image/jpeg")
+	w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write(data)
 }
 
 // StreamHandler handles GET /stream requests for MJPEG streaming.

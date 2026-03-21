@@ -234,6 +234,26 @@ open http://localhost:8080/stream
 vlc http://localhost:8080/stream
 ```
 
+### GET /snapshot
+
+Single JPEG frame capture. Returns the current screen as a JPEG image.
+Useful for clients that cannot use MJPEG streaming (e.g., older iOS devices where WKWebView is unavailable).
+
+Query parameters:
+- `quality`: `high` (default, 85%) or `low` (50%)
+
+```bash
+# Get a single frame
+curl -o frame.jpg http://localhost:8080/snapshot
+
+# Get low quality frame
+curl -o frame.jpg http://localhost:8080/snapshot?quality=low
+```
+
+Response headers:
+- `Content-Type: image/jpeg`
+- `Cache-Control: no-cache, no-store, must-revalidate`
+
 ### POST /touch
 
 Send touch events to the rendered dashboard.

@@ -27,11 +27,6 @@ func ChromeOptions(chromePath string, viewportWidth, viewportHeight int, insecur
 		chromedp.Flag("disable-hang-monitor", true),
 		chromedp.Flag("disable-component-extensions-with-background-pages", true),
 
-		// Crash reporter — must be disabled in containers (crashpad needs a database dir)
-		chromedp.Flag("disable-crash-reporter", true),
-		chromedp.Flag("no-first-run", true),
-		chromedp.Flag("user-data-dir", "/tmp/chrome-data"),
-
 		// Viewport size
 		chromedp.WindowSize(viewportWidth, viewportHeight),
 
