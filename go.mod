@@ -1,4 +1,4 @@
-module github.com/cbenitezpy-ueno/retrodash-server
+module github.com/cbenitezpy/retrodash-server
 
 go 1.24.0
 

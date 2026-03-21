@@ -7,9 +7,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/browser"
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/origins"
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/stream"
+	"github.com/cbenitezpy/retrodash-server/internal/browser"
+	"github.com/cbenitezpy/retrodash-server/internal/origins"
+	"github.com/cbenitezpy/retrodash-server/internal/stream"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

@@ -11,8 +11,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/config"
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/health"
+	"github.com/cbenitezpy/retrodash-server/internal/config"
+	"github.com/cbenitezpy/retrodash-server/internal/health"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 

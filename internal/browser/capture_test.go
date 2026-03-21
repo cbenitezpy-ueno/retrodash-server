@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/stream"
-	"github.com/cbenitezpy-ueno/retrodash-server/pkg/types"
+	"github.com/cbenitezpy/retrodash-server/internal/stream"
+	"github.com/cbenitezpy/retrodash-server/pkg/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

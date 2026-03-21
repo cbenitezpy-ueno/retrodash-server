@@ -4,7 +4,7 @@ package health
 import (
 	"time"
 
-	"github.com/cbenitezpy-ueno/retrodash-server/pkg/types"
+	"github.com/cbenitezpy/retrodash-server/pkg/types"
 )
 
 // Version is the server version.

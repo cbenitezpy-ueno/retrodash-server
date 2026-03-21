@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/health"
+	"github.com/cbenitezpy/retrodash-server/internal/health"
 )
 
 // responseWriter wraps http.ResponseWriter to capture status code.

@@ -4,7 +4,7 @@ import (
 	"context"
 	"sync"
 
-	"github.com/cbenitezpy-ueno/retrodash-server/pkg/types"
+	"github.com/cbenitezpy/retrodash-server/pkg/types"
 )
 
 // TouchHandler manages touch event translation and execution.

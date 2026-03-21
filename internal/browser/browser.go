@@ -16,8 +16,8 @@ import (
 	"github.com/chromedp/cdproto/page"
 	"github.com/chromedp/chromedp"
 
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/config"
-	"github.com/cbenitezpy-ueno/retrodash-server/pkg/types"
+	"github.com/cbenitezpy/retrodash-server/internal/config"
+	"github.com/cbenitezpy/retrodash-server/pkg/types"
 )
 
 var (

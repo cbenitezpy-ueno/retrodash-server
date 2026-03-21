@@ -55,7 +55,7 @@ Docker automatically pulls the correct image for your architecture.
 ### Pull
 
 ```bash
-docker pull ghcr.io/cbenitezpy-ueno/retrodash-server:latest
+docker pull ghcr.io/cbenitezpy/retrodash-server:latest
 ```
 
 ### Run
@@ -65,7 +65,7 @@ docker run --rm \
   --shm-size=256m \
   -p 8080:8080 \
   -e DASHBOARD_URL=http://host.docker.internal:3000/d/my-dashboard \
-  ghcr.io/cbenitezpy-ueno/retrodash-server:latest
+  ghcr.io/cbenitezpy/retrodash-server:latest
 ```
 
 ### Docker Compose
@@ -73,7 +73,7 @@ docker run --rm \
 ```yaml
 services:
   bridge:
-    image: ghcr.io/cbenitezpy-ueno/retrodash-server:latest
+    image: ghcr.io/cbenitezpy/retrodash-server:latest
     ports:
       - "8080:8080"
     environment:
@@ -97,7 +97,7 @@ services:
 
 After the first successful publish, the package defaults to private. To make it public:
 
-1. Go to https://github.com/cbenitezpy-ueno/retrodash-server/pkgs/container/retrodash-server
+1. Go to https://github.com/cbenitezpy/retrodash-server/pkgs/container/retrodash-server
 2. Click **Package settings**
 3. Under **Danger Zone**, click **Change visibility**
 4. Select **Public** and confirm
@@ -109,7 +109,7 @@ After the first successful publish, the package defaults to private. To make it 
 ```bash
 # Install from OCI registry
 helm install retrodash-bridge \
-  oci://ghcr.io/cbenitezpy-ueno/charts/retrodash-bridge \
+  oci://ghcr.io/cbenitezpy/charts/retrodash-bridge \
   --set env.DASHBOARD_URL=https://grafana.example.com/d/your-dashboard
 
 # Verify pod is ready
@@ -124,7 +124,7 @@ open http://localhost:8080/stream
 
 ```bash
 helm install retrodash-bridge \
-  oci://ghcr.io/cbenitezpy-ueno/charts/retrodash-bridge \
+  oci://ghcr.io/cbenitezpy/charts/retrodash-bridge \
   --set env.DASHBOARD_URL=https://grafana.example.com/d/your-dashboard \
   --set resources.limits.memory=2Gi \
   --set ingress.enabled=true \
@@ -137,7 +137,7 @@ helm install retrodash-bridge \
 
 ```bash
 # Clone this repo
-git clone https://github.com/cbenitezpy-ueno/retrodash-server.git
+git clone https://github.com/cbenitezpy/retrodash-server.git
 cd retrodash-server
 
 # Create an overlay with your configuration

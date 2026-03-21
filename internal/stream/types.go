@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/cbenitezpy-ueno/retrodash-server/pkg/types"
+	"github.com/cbenitezpy/retrodash-server/pkg/types"
 )
 
 // Frame represents a captured screenshot ready for streaming.

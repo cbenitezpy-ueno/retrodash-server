@@ -5,7 +5,7 @@ import (
 	"image"
 	"image/jpeg"
 
-	"github.com/cbenitezpy-ueno/retrodash-server/pkg/types"
+	"github.com/cbenitezpy/retrodash-server/pkg/types"
 )
 
 // Encoder handles JPEG encoding with configurable quality levels.

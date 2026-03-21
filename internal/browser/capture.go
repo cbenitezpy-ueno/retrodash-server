@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/stream"
+	"github.com/cbenitezpy/retrodash-server/internal/stream"
 )
 
 // CaptureService handles screenshot capture from the browser.

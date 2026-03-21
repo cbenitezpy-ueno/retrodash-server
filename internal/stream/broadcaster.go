@@ -4,7 +4,7 @@ import (
 	"log"
 	"sync"
 
-	"github.com/cbenitezpy-ueno/retrodash-server/pkg/types"
+	"github.com/cbenitezpy/retrodash-server/pkg/types"
 )
 
 // Broadcaster manages multiple stream clients and broadcasts frames.

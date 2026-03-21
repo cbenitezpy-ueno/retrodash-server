@@ -8,11 +8,11 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/browser"
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/config"
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/origins"
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/stream"
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/terminal"
+	"github.com/cbenitezpy/retrodash-server/internal/browser"
+	"github.com/cbenitezpy/retrodash-server/internal/config"
+	"github.com/cbenitezpy/retrodash-server/internal/origins"
+	"github.com/cbenitezpy/retrodash-server/internal/stream"
+	"github.com/cbenitezpy/retrodash-server/internal/terminal"
 )
 
 var (

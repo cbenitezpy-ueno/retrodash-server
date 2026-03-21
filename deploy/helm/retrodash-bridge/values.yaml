@@ -1,8 +1,8 @@
 # RetroDash Bridge Helm Chart Values
-# Full documentation: https://github.com/cbenitezpy-ueno/retrodash
+# Full documentation: https://github.com/cbenitezpy/retrodash
 
 image:
-  repository: ghcr.io/cbenitezpy-ueno/retrodash-server
+  repository: ghcr.io/cbenitezpy/retrodash-server
   tag: ""  # Defaults to Chart appVersion
   pullPolicy: IfNotPresent
 

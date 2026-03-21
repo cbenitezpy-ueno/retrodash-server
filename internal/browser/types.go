@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/cbenitezpy-ueno/retrodash-server/pkg/types"
+	"github.com/cbenitezpy/retrodash-server/pkg/types"
 )
 
 // Browser represents a managed headless browser instance.

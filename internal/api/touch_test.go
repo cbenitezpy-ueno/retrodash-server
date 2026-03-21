@@ -8,9 +8,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/browser"
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/health"
-	"github.com/cbenitezpy-ueno/retrodash-server/pkg/types"
+	"github.com/cbenitezpy/retrodash-server/internal/browser"
+	"github.com/cbenitezpy/retrodash-server/internal/health"
+	"github.com/cbenitezpy/retrodash-server/pkg/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

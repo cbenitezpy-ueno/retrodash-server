@@ -10,11 +10,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/browser"
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/health"
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/origins"
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/stream"
-	"github.com/cbenitezpy-ueno/retrodash-server/pkg/types"
+	"github.com/cbenitezpy/retrodash-server/internal/browser"
+	"github.com/cbenitezpy/retrodash-server/internal/health"
+	"github.com/cbenitezpy/retrodash-server/internal/origins"
+	"github.com/cbenitezpy/retrodash-server/internal/stream"
+	"github.com/cbenitezpy/retrodash-server/pkg/types"
 )
 
 // SourceProvider is the interface used by handlers to interact with the active

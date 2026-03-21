@@ -7,10 +7,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/browser"
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/config"
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/origins"
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/terminal"
+	"github.com/cbenitezpy/retrodash-server/internal/browser"
+	"github.com/cbenitezpy/retrodash-server/internal/config"
+	"github.com/cbenitezpy/retrodash-server/internal/origins"
+	"github.com/cbenitezpy/retrodash-server/internal/terminal"
 	"github.com/stretchr/testify/assert"
 )
 

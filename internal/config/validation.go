@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/cbenitezpy-ueno/retrodash-server/internal/origins"
+	"github.com/cbenitezpy/retrodash-server/internal/origins"
 )
 
 var (
