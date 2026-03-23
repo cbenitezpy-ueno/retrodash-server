@@ -68,6 +68,18 @@ docker run --rm \
   ghcr.io/cbenitezpy/retrodash-server:latest
 ```
 
+### Verify it works
+
+Open the stream in your browser to confirm the server is rendering your dashboard:
+
+```bash
+open http://localhost:8080/stream
+# or: curl -I http://localhost:8080/stream
+# or: vlc http://localhost:8080/stream
+```
+
+You should see your Grafana dashboard streaming as a live video feed. Once confirmed, install the [RetroDash app](https://github.com/cbenitezpy/retrodash/releases) on your tablet.
+
 ### Docker Compose
 
 ```yaml

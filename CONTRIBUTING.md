@@ -44,4 +44,4 @@ DASHBOARD_URL=http://localhost:3000 ./bridge
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the GPL v3 License.
+By contributing, you agree that your contributions will be licensed under the [AGPL-3.0 License](LICENSE).
