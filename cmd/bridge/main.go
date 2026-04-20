@@ -15,6 +15,7 @@ import (
 	"github.com/cbenitezpy/retrodash-server/internal/stream"
 	"github.com/cbenitezpy/retrodash-server/internal/switching"
 	"github.com/cbenitezpy/retrodash-server/internal/terminal"
+	"github.com/cbenitezpy/retrodash-server/internal/web"
 )
 
 func main() {
@@ -128,11 +129,23 @@ func main() {
 	// Register routes
 	srv.RegisterHandler("/health", handlers.HealthHandler)
 	srv.RegisterHandler("/stream", handlers.StreamHandler)
+	srv.RegisterHandler("/snapshot", handlers.SnapshotHandler)
 	srv.RegisterHandler("/touch", handlers.TouchHandler)
 	srv.RegisterHandler("/api/origins", handlers.OriginsHandler)
 	srv.RegisterHandler("/api/origins/", handlers.OriginItemHandler)
 
-	log.Printf("Routes registered: /health, /healthz, /readyz, /metrics, /stream, /touch, /api/origins, /api/origins/{id} (mode: %s)", mode)
+	// Register the embedded web UI LAST so that all specific routes above
+	// (API, stream, health, metrics) keep their http.ServeMux longest-match
+	// priority. If the bundle hasn't been built yet (dev image), log and
+	// skip — the bridge still serves its API without a web UI.
+	if webHandler, err := web.NewHandler(); err == nil {
+		srv.RegisterHandler("/", webHandler.ServeHTTP)
+		log.Println("Web UI handler registered at /")
+	} else {
+		log.Printf("Web UI disabled: %v (run `npm run web:build` to populate server/internal/web/dist)", err)
+	}
+
+	log.Printf("Routes registered: /health, /healthz, /readyz, /metrics, /stream, /snapshot, /touch, /api/origins, /api/origins/{id} (mode: %s)", mode)
 	log.Printf("Origin manager initialized with %d origins", originManager.Count())
 
 	// Start server with graceful shutdown

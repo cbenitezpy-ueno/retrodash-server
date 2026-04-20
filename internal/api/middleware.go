@@ -98,7 +98,8 @@ func PrometheusMiddleware(metrics *health.Metrics) func(http.Handler) http.Handl
 }
 
 // normalizePath collapses dynamic path segments to prevent unbounded Prometheus
-// label cardinality. For example, /api/origins/abc-123 becomes /api/origins/{id}.
+// label cardinality. For example, /api/origins/abc-123 becomes /api/origins/{id}
+// and /static/js/main.abc123.js becomes /static/*.
 func normalizePath(path string) string {
 	if strings.HasPrefix(path, "/api/origins/") {
 		rest := strings.TrimPrefix(path, "/api/origins/")
@@ -109,6 +110,10 @@ func normalizePath(path string) string {
 			return "/api/origins/{id}/connect"
 		}
 		return "/api/origins/{id}"
+	}
+	// Web UI hashed assets — avoid per-hash label explosion.
+	if strings.HasPrefix(path, "/static/") {
+		return "/static/*"
 	}
 	return path
 }
